@@ -1,917 +1,488 @@
 <!DOCTYPE html>
 <html lang="si">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cloudflare සම්පූර්ණ Guide | LinkedIn Article</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: #f3f2ef;
-    color: #191919;
-    line-height: 1.7;
-  }
-
-  .page-wrapper {
-    max-width: 740px;
-    margin: 0 auto;
-    padding: 24px 16px 60px;
-  }
-
-  /* LinkedIn-style Article Card */
-  .article-card {
-    background: #ffffff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
-  }
-
-  /* Hero Banner */
-  .hero-banner {
-    background: linear-gradient(135deg, #f6821f 0%, #f4511e 40%, #1a1a2e 100%);
-    padding: 56px 48px 48px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-banner::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -60px;
-    width: 280px; height: 280px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.05);
-  }
-
-  .hero-banner::after {
-    content: '';
-    position: absolute;
-    bottom: -40px; left: 40px;
-    width: 180px; height: 180px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-  }
-
-  .cloudflare-logo-area {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 24px;
-    position: relative; z-index: 1;
-  }
-
-  .cf-icon {
-    width: 52px; height: 52px;
-    background: #f6821f;
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    border: 2px solid rgba(255,255,255,0.3);
-  }
-
-  .cf-icon svg { width: 32px; height: 32px; }
-
-  .brand-label {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: rgba(255,255,255,0.7);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .hero-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 38px;
-    font-weight: 400;
-    color: #ffffff;
-    line-height: 1.2;
-    margin-bottom: 16px;
-    position: relative; z-index: 1;
-  }
-
-  .hero-subtitle {
-    font-size: 16px;
-    color: rgba(255,255,255,0.75);
-    max-width: 520px;
-    line-height: 1.6;
-    position: relative; z-index: 1;
-  }
-
-  /* Author bar */
-  .author-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 48px;
-    border-bottom: 1px solid #e8e8e8;
-  }
-
-  .author-avatar {
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #f6821f, #f4511e);
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 600; font-size: 15px;
-    color: white;
-    flex-shrink: 0;
-  }
-
-  .author-info { flex: 1; }
-  .author-name { font-weight: 600; font-size: 14px; color: #191919; }
-  .author-meta { font-size: 12px; color: #666; margin-top: 1px; }
-
-  .stats-row {
-    display: flex;
-    gap: 20px;
-    font-size: 12px;
-    color: #666;
-    align-items: center;
-  }
-
-  .stat-pill {
-    background: #f3f2ef;
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: 11px;
-    color: #555;
-    font-weight: 500;
-  }
-
-  /* Article content */
-  .article-body {
-    padding: 36px 48px 48px;
-  }
-
-  .lead-text {
-    font-family: 'Instrument Serif', serif;
-    font-size: 20px;
-    color: #333;
-    line-height: 1.6;
-    margin-bottom: 32px;
-    padding-bottom: 28px;
-    border-bottom: 2px solid #f6821f;
-  }
-
-  /* Section headings */
-  h2.section-title {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: #191919;
-    margin: 36px 0 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  h2.section-title .icon-circle {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    background: #fff3e8;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
-  h3.sub-title {
-    font-size: 17px;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin: 24px 0 8px;
-  }
-
-  p.body-text {
-    font-size: 16px;
-    color: #333;
-    line-height: 1.75;
-    margin-bottom: 14px;
-  }
-
-  /* Analogy boxes */
-  .analogy-box {
-    background: #fff8f0;
-    border-left: 4px solid #f6821f;
-    border-radius: 0 8px 8px 0;
-    padding: 18px 20px;
-    margin: 20px 0;
-  }
-
-  .analogy-box .analogy-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #f6821f;
-    margin-bottom: 6px;
-  }
-
-  .analogy-box p {
-    font-size: 15px;
-    color: #444;
-    line-height: 1.65;
-    margin: 0;
-  }
-
-  /* Feature grid */
-  .feature-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    margin: 20px 0;
-  }
-
-  .feature-card {
-    background: #f8f8f8;
-    border-radius: 10px;
-    padding: 18px;
-    border: 1px solid #eee;
-  }
-
-  .feature-card .f-icon {
-    font-size: 24px;
-    margin-bottom: 8px;
-  }
-
-  .feature-card .f-title {
-    font-weight: 600;
-    font-size: 14px;
-    color: #191919;
-    margin-bottom: 6px;
-  }
-
-  .feature-card .f-desc {
-    font-size: 13px;
-    color: #555;
-    line-height: 1.55;
-  }
-
-  /* Timeline / steps */
-  .steps-list {
-    list-style: none;
-    margin: 16px 0;
-  }
-
-  .steps-list li {
-    display: flex;
-    gap: 14px;
-    margin-bottom: 18px;
-    align-items: flex-start;
-  }
-
-  .step-num {
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    background: #f6821f;
-    color: white;
-    font-size: 13px;
-    font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .step-content .step-title {
-    font-weight: 600;
-    font-size: 15px;
-    color: #191919;
-    margin-bottom: 3px;
-  }
-
-  .step-content .step-desc {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.6;
-  }
-
-  /* Highlight quote */
-  .big-quote {
-    background: #1a1a2e;
-    border-radius: 12px;
-    padding: 28px 32px;
-    margin: 32px 0;
-    text-align: center;
-  }
-
-  .big-quote p {
-    font-family: 'Instrument Serif', serif;
-    font-size: 22px;
-    color: #fff;
-    line-height: 1.5;
-    margin: 0;
-  }
-
-  .big-quote .quote-source {
-    font-size: 13px;
-    color: rgba(255,255,255,0.5);
-    margin-top: 12px;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  /* Comparison table */
-  .compare-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    margin: 20px 0;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid #e8e8e8;
-  }
-
-  .compare-table th {
-    background: #1a1a2e;
-    color: #fff;
-    padding: 12px 16px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 13px;
-  }
-
-  .compare-table td {
-    padding: 11px 16px;
-    border-bottom: 1px solid #f0f0f0;
-    color: #333;
-    vertical-align: top;
-  }
-
-  .compare-table tr:last-child td { border-bottom: none; }
-  .compare-table tr:nth-child(even) td { background: #fafafa; }
-
-  .check { color: #16a34a; font-weight: 700; }
-  .cross { color: #dc2626; font-weight: 700; }
-
-  /* Tag pills */
-  .tag-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 16px 0;
-  }
-
-  .tag {
-    background: #fff3e8;
-    color: #c2540a;
-    border-radius: 20px;
-    padding: 5px 14px;
-    font-size: 13px;
-    font-weight: 500;
-    border: 1px solid #fddcbb;
-  }
-
-  /* Info box */
-  .info-box {
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 10px;
-    padding: 18px 20px;
-    margin: 20px 0;
-  }
-
-  .info-box .info-title {
-    font-weight: 700;
-    font-size: 14px;
-    color: #1d4ed8;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .info-box p {
-    font-size: 14px;
-    color: #1e40af;
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  /* CTA section */
-  .cta-section {
-    background: linear-gradient(135deg, #f6821f 0%, #f4511e 100%);
-    border-radius: 12px;
-    padding: 32px 36px;
-    margin-top: 36px;
-    text-align: center;
-  }
-
-  .cta-section h3 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 10px;
-  }
-
-  .cta-section p {
-    font-size: 15px;
-    color: rgba(255,255,255,0.85);
-    margin-bottom: 20px;
-  }
-
-  .cta-btn {
-    display: inline-block;
-    background: #fff;
-    color: #f4511e;
-    border-radius: 24px;
-    padding: 12px 28px;
-    font-weight: 700;
-    font-size: 15px;
-    text-decoration: none;
-    transition: transform 0.15s;
-  }
-
-  .cta-btn:hover { transform: scale(1.03); }
-
-  /* Divider */
-  .section-divider {
-    border: none;
-    border-top: 1px solid #e8e8e8;
-    margin: 32px 0;
-  }
-
-  /* Hashtag row */
-  .hashtag-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid #e8e8e8;
-  }
-
-  .hashtag {
-    font-size: 14px;
-    color: #0a66c2;
-    font-weight: 500;
-  }
-
-  /* Responsive */
-  @media (max-width: 600px) {
-    .hero-banner { padding: 36px 24px 32px; }
-    .author-bar { padding: 14px 24px; }
-    .article-body { padding: 28px 24px 36px; }
-    .hero-title { font-size: 28px; }
-    .feature-grid { grid-template-columns: 1fr; }
-    h2.section-title { font-size: 19px; }
-  }
-
-  .sinhala-text {
-    font-family: 'Noto Sans Sinhala', sans-serif;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloudflare සම්පූර්ණ Guide | LinkedIn Article</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="./css/style.css">
 </head>
+
 <body>
-<div class="page-wrapper">
-  <div class="article-card">
+  <div class="page-wrapper">
+    <div class="article-card">
 
-    <div class="hero-banner">
-      <div class="cloudflare-logo-area">
-        <div class="cf-icon">
-          <svg viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M67.5 42.5C72.5 42.5 76.5 38.5 76.5 33.5C76.5 28.5 72.5 24.5 67.5 24.5C67 24.5 66.5 24.5 66 24.6C64.5 19.5 59.8 16 54.5 16C48 16 42.7 21 42.7 27.5C42.7 27.8 42.7 28.1 42.8 28.4C39.5 29.2 37 32.2 37 35.8C37 40 40.5 43.5 44.8 43.5L67.5 43.5V42.5Z" fill="white" opacity="0.9"/>
-            <path d="M76 38C78.2 38 80 36.2 80 34C80 31.8 78.2 30 76 30L75.5 30C74.7 27.2 72.1 25.2 69.2 25.2C65.8 25.2 63.2 27.8 63.2 31.2C63.2 31.4 63.2 31.6 63.2 31.8C61.7 32.2 60.6 33.6 60.6 35.2C60.6 36.8 61.8 38 63.4 38L76 38Z" fill="rgba(246,130,31,0.8)"/>
-          </svg>
+      <div class="hero-banner">
+        <div class="cloudflare-logo-area">
+          <div class="cf-icon">
+            <svg viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M67.5 42.5C72.5 42.5 76.5 38.5 76.5 33.5C76.5 28.5 72.5 24.5 67.5 24.5C67 24.5 66.5 24.5 66 24.6C64.5 19.5 59.8 16 54.5 16C48 16 42.7 21 42.7 27.5C42.7 27.8 42.7 28.1 42.8 28.4C39.5 29.2 37 32.2 37 35.8C37 40 40.5 43.5 44.8 43.5L67.5 43.5V42.5Z"
+                fill="white" opacity="0.9" />
+              <path
+                d="M76 38C78.2 38 80 36.2 80 34C80 31.8 78.2 30 76 30L75.5 30C74.7 27.2 72.1 25.2 69.2 25.2C65.8 25.2 63.2 27.8 63.2 31.2C63.2 31.4 63.2 31.6 63.2 31.8C61.7 32.2 60.6 33.6 60.6 35.2C60.6 36.8 61.8 38 63.4 38L76 38Z"
+                fill="rgba(246,130,31,0.8)" />
+            </svg>
+          </div>
+          <div class="brand-label sinhala-text">සම්පූර්ණ Guide</div>
         </div>
-        <div class="brand-label sinhala-text">සම්පූර්ණ Guide</div>
+        <h1 class="hero-title sinhala-text">☁️ Cloudflare යනු කුමක්ද?</h1>
+        <p class="hero-subtitle sinhala-text">Internet ලෝකයේ "Security Guard" ගැන ඔබ දැනගත යුතු සෑම දෙයක්ම — සරල බසින්,
+          ජීවිතේ උදාහරණ සමඟ.</p>
       </div>
-      <h1 class="hero-title sinhala-text">☁️ Cloudflare යනු කුමක්ද?</h1>
-      <p class="hero-subtitle sinhala-text">Internet ලෝකයේ "Security Guard" ගැන ඔබ දැනගත යුතු සෑම දෙයක්ම — සරල බසින්, ජීවිතේ උදාහරණ සමඟ.</p>
+
+      <div class="author-bar">
+        <div class="author-avatar">CF</div>
+        <div class="author-info">
+          <div class="author-name sinhala-text">Tech Explained · සිංහල</div>
+          <div class="author-meta sinhala-text">Web Technology · Cloud Security · Beginners Guide</div>
+        </div>
+        <div class="stats-row">
+          <span class="stat-pill">☕ 8 min read</span>
+        </div>
+      </div>
+
+      <div class="article-body">
+
+        <p class="lead-text sinhala-text">
+          ඔබ "Cloudflare" කියන වචනය ඇහුවාම... "ඒ මොකක්ද?" කියලා හිතෙනවා ඇති.
+          අද ඒ ගැන ඔබ දැනගත යුතු සෑම දෙයක්ම —
+          <em>ළමයෙකුටත් තේරෙන</em> සරල භාෂාවෙන් කියා දෙන්නම්.
+        </p>
+
+        <h2 class="section-title">
+          <span class="icon-circle">🏫</span>
+          <span class="sinhala-text">පළමුව — Cloudflare කියන්නේ කොහොම එකක්ද?</span>
+        </h2>
+
+        <p class="body-text sinhala-text">
+          Cloudflare යනු 2009 දී ඇමරිකාවේ ආරම්භ කළ <strong>Internet Infrastructure Company</strong> එකක්.
+          ඔවුන්ගේ ප්‍රධාන කාර්යය තමයි Internet ලෝකය ආරක්ෂා කරන එක සහ වේගවත් කරන එක.
+        </p>
+
+        <div class="analogy-box">
+          <div class="analogy-label sinhala-text">🍎 ජීවිතේ උදාහරණය</div>
+          <p class="sinhala-text">
+            ඔයාගේ ගෙදර ගේට්ටුව ළඟ Security Guard කෙනෙක් ඉන්නවා කියලා හිතන්න.
+            ඒ Guard කෙනා බලනවා — ගෙදරට එන අය ඇත්තටම ඔයාලාගේ හිතවතුන්ද,
+            නැත්නම් හොරෙක්ද කියලා. හොරෙක් ආවොත් ඒ Guard කෙනා එයාව block කරනවා.
+            හිතවතෙකු ආවොත් ඉක්මනින් ඇතුළට ගන්නවා. <strong>Cloudflare</strong> කරන්නේ අන්න ඒ වැඩේමයි —
+            හැබැයි Websites වලට!
+          </p>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-title">
+          <span class="icon-circle">📖</span>
+          <span class="sinhala-text">Cloudflare කරන ප්‍රධානතම වැඩෙන් එකක් — DNS</span>
+        </h2>
+
+        <p class="body-text sinhala-text">
+          ඔබ browser එකේ <strong>google.com</strong> කියලා type කරනකොට — computer එක හොයනවා
+          "google.com තියෙන්නේ කොහෙද?" කියලා. DNS (Domain Name System) කියන්නේ ඒකට අදාළ address book එකක් වගේ දෙයක්.
+        </p>
+
+        <div class="analogy-box">
+          <div class="analogy-label sinhala-text">📞 Phone Book උදාහරණය</div>
+          <p class="sinhala-text">
+            ඔයාට "රාජ්" කියන කෙනාගේ ගෙදරට යන්න ඕනෑ නම් ඔයා phone book එක බලනවා —
+            එතකොට රාජ්ගේ address එක හොයාගන්න පුළුවන්. DNS කියන්නේ අන්න ඒ Phone Book එක වගේ.
+            google.com = <code>142.250.80.46</code> (IP address) කියලා DNS එකෙන් කියනවා.
+            <br><br>
+            Cloudflare ලෝකයේ <strong>වේගවත්ම DNS</strong> <code>1.1.1.1</code> ලබා දෙනවා —
+            ඒක සම්පූර්ණයෙන්ම FREE සහ Private, ඒ වගේම ඔබේ දත්ත track කරන්නේ නැතුව (No tracking)!
+          </p>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-title">
+          <span class="icon-circle">🌍</span>
+          <span class="sinhala-text">CDN — Website එක ඉක්මන් කරන Magic එක</span>
+        </h2>
+
+        <p class="body-text sinhala-text">
+          CDN කියන්නේ <strong>Content Delivery Network</strong> කියන එකයි. Website වල copies ලෝකේ පුරා තියෙන
+          servers දහස් ගණනක (නගර 300+ ක) store කරලා —
+          ඔයාට ළඟම තියෙන server එක හරහා website එක deliver කරනවා.
+        </p>
+
+        <div class="analogy-box">
+          <div class="analogy-label sinhala-text">🍕 Pizza Shop උදාහරණය</div>
+          <p class="sinhala-text">
+            Pizza shop එකක් Colombo වල විතරක් තිබ්බොත් — Galle ඉඳලා order කළොත්
+            delivery එකට ගොඩක් time යනවා. ඉක්මනින් දෙන්න නම් Galle, Kandy, Jaffna වගේ නගර වලත්
+            branches තියෙන්න ඕනේ. CDN කියන්නේ අන්න ඒ branches වලට. ඔයාට ළඟම තියෙන branch එකෙන් deliver කරනකොට
+            website එක <strong>තත්පර ගාණකින් load වෙනවා!</strong>
+          </p>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-title">
+          <span class="icon-circle">🛡️</span>
+          <span class="sinhala-text">DDoS Attack කියන්නේ මොකක්ද? Cloudflare ආරක්ෂා කරන්නේ කෙසේද?</span>
+        </h2>
+
+        <p class="body-text sinhala-text">
+          DDoS (Distributed Denial of Service) Attack එකක් කියන්නේ — Hackers ලා website එකට
+          <strong>එකවර fake requests මිලියන ගණනක්</strong> යවන එකටයි — එතකොට Server එක crash වෙලා
+          real users ලාට site එකට access වෙන්න බැරි වෙනවා.
+        </p>
+
+        <div class="analogy-box">
+          <div class="analogy-label sinhala-text">🏦 Bank Queue උදාහරණය</div>
+          <p class="sinhala-text">
+            Bank එකක පෝලිම පුරාවටම fake customers ලා පිරුණොත් —
+            ඇත්ත customers ලාට service ගන්න බැරි වෙනවා. Bank එකේ වැඩ අඩාල වෙනවා.
+            DDoS Attack එකකුත් ඒ වගේ. Cloudflare ඒ fake requests ටික filter කරලා
+            real users ලාට විතරක් service දෙනවා — <strong>තත්පරයකට Attacks මිලියන ගණනක් Block කරනවා!</strong>
+          </p>
+        </div>
+
+        <div class="info-box">
+          <div class="info-title sinhala-text">📊 ඇත්ත Data</div>
+          <p class="sinhala-text">
+            Cloudflare දිනකට අන්තර්ජාලයේ traffic එකෙන් <strong>20%</strong> ක් පමණ handle කරනවා.
+            ලෝකේ පුරා Internet users ලා බිලියන 5 කට වඩා ඉන්නවා — Cloudflare ඒ ගොඩදෙනෙක්ගේ requests
+            තත්පර ගාණක් ඇතුළත process කරනවා.
+          </p>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-title">
+          <span class="icon-circle">🔒</span>
+          <span class="sinhala-text">Web Application Firewall (WAF)</span>
+        </h2>
+
+        <p class="body-text sinhala-text">
+          WAF කියන්නේ Website එකේ ඉන්න "Smart Bouncer" වගේ කෙනෙක්. Hackers ලා
+          website එක hack කරන්නට try කළොත් — SQL Injection, XSS Attacks,
+          Bot Attacks වගේ දේවල් — Cloudflare WAF හරහා ඒ දේවල් filter කරලා block කරනවා.
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="f-icon">🦠</div>
+            <div class="f-title sinhala-text">SQL Injection Block</div>
+            <div class="f-desc sinhala-text">Database එකේ දත්ත හොරකම් කරන attacks automatically block කරනවා</div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">🤖</div>
+            <div class="f-title sinhala-text">Bot Protection</div>
+            <div class="f-desc sinhala-text">Fake bots ලව filter කරලා real users ලාට පමණක් access දෙනවා</div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">🔐</div>
+            <div class="f-title sinhala-text">SSL/TLS Free</div>
+            <div class="f-desc sinhala-text">ඔයාගේ website එක HTTPS කරන්නට Free SSL ලබා දෙනවා</div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">📧</div>
+            <div class="f-title sinhala-text">Email Routing</div>
+            <div class="f-desc sinhala-text">Domain emails නොමිලේ manage කරගන්න පුළුවන්</div>
+          </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-title">
+          <span class="icon-circle">⚙️</span>
+          <span class="sinhala-text">Cloudflare ක්‍රියා කරන්නේ කෙසේද? Step by Step</span>
+        </h2>
+
+        <ul class="steps-list">
+          <li>
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-title sinhala-text">ඔයා website ලිපිනය type කරනවා</div>
+              <div class="step-desc sinhala-text">example.com කියලා browser එකේ type කරනකොට ඒ request එක Cloudflare
+                Server එකට එනවා — ඔයාගේ computer එකට ළඟම තියෙන datacenter එකට.</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-title sinhala-text">Security Check</div>
+              <div class="step-desc sinhala-text">Cloudflare ඔයාගේ request එක scan කරනවා — Hacker කෙනෙක්ද? Bot කෙනෙක්ද?
+                Real user කෙනෙක්ද? Real user කෙනෙක් නම් විතරක් ඇතුළට යවනවා.</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-title sinhala-text">Cache Check</div>
+              <div class="step-desc sinhala-text">Website එකේ copy එකක් Cloudflare server වල save වෙලාද තියෙන්නේ කියලා
+                බලනවා. එහෙම නම් original server එකට නොගිහින් ළඟම තියෙන server එකෙන් deliver කරනවා — Super Fast!</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <div class="step-title sinhala-text">ඔයාට deliver කරනවා!</div>
+              <div class="step-desc sinhala-text">Encrypted (HTTPS) connection එකක් හරහා website එක ඔයාට පෙන්වනවා — ඉතා
+                ආරක්ෂිතව, ඉක්මනින්!</div>
+            </div>
+          </li>
+        </ul>
+
+        <hr class="section-divider">
+
+        <div class="big-quote">
+          <p class="sinhala-text">"Cloudflare නැතිව modern Internet එකක් imagine කරන්නත් අමාරුයි — ඒ ගොල්ලො තමයි මුළු
+            ලෝකයේම Internet එකේ නොපෙනෙන කොඳු නාරටිය."</p>
+          <div class="quote-source">— Tech Analysts, 2024</div>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-title">
+          <span class="icon-circle">💰</span>
+          <span class="sinhala-text">Free Plan vs Paid Plans — ඔයාට ඕනෑ කරන්නේ කුමක්ද?</span>
+        </h2>
+
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Free 🆓</th>
+              <th>Pro ($20/mo)</th>
+              <th>Business ($200/mo)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="sinhala-text">CDN (Content Delivery)</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+            </tr>
+            <tr>
+              <td class="sinhala-text">SSL Certificate</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+            </tr>
+            <tr>
+              <td class="sinhala-text">Basic DDoS Protection</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+            </tr>
+            <tr>
+              <td class="sinhala-text">Advanced WAF Rules</td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+            </tr>
+            <tr>
+              <td class="sinhala-text">Image Optimization</td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓</span></td>
+            </tr>
+            <tr>
+              <td class="sinhala-text">Custom SSL Certificate</td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓</span></td>
+            </tr>
+            <tr>
+              <td class="sinhala-text">24/7 Priority Support</td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="body-text sinhala-text">
+          <strong>ඔයාට තියෙන්නේ Personal blog එකක්, Portfolio එකක් හෝ Small business එකක් නම්</strong> — Free plan එක
+          හොඳටම ප්‍රමාණවත්!
+          E-commerce හෝ ගොඩක් High traffic තියෙන sites වලට Pro plan එකක් consider කරන්න පුළුවන්.
+        </p>
+
+        <hr class="section-divider">
+
+        <h2 class="section-title">
+          <span class="icon-circle">🚀</span>
+          <span class="sinhala-text">Cloudflare හරහා දෙන තවත් Amazing Products</span>
+        </h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="f-icon">⚡</div>
+            <div class="f-title">Cloudflare Workers</div>
+            <div class="f-desc sinhala-text">Code එක Edge Servers වල run වෙනවා — Original server එකට යන්නේ නැතුවම වැඩ
+              කරන serverless apps!</div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">🗄️</div>
+            <div class="f-title">Cloudflare R2</div>
+            <div class="f-desc sinhala-text">AWS S3 වගේ storage එකක් — හැබැයි Data Transfer වලට ගෙවන්න ඕනේ නෑ (Free
+              Egress!)</div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">🌐</div>
+            <div class="f-title">Cloudflare Pages</div>
+            <div class="f-desc sinhala-text">Static websites සහ Full-stack apps deploy කරන්න පුළුවන් — Fast, Free, Easy!
+            </div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">🔑</div>
+            <div class="f-title">Cloudflare Zero Trust</div>
+            <div class="f-desc sinhala-text">Company networks VPN නැතිව secure කරනවා — modern corporate security!</div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">📡</div>
+            <div class="f-title">Cloudflare Tunnel</div>
+            <div class="f-desc sinhala-text">Port forwarding කරන්නේ නැතුව ඔයාගේ local server එක internet එකට expose
+              කරන්න පුළුවන්!</div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">📊</div>
+            <div class="f-title">Cloudflare Analytics</div>
+            <div class="f-desc sinhala-text">Website traffic insights ලබා දෙනවා — cookie consent නැතිව privacy-first
+              විදියට!</div>
+          </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-title">
+          <span class="icon-circle">🏢</span>
+          <span class="sinhala-text">Cloudflare පාවිච්චි කරන්නේ කවුද?</span>
+        </h2>
+
+        <p class="body-text sinhala-text">
+          ලෝකේ ප්‍රසිද්ධ companies ඔවුන්ගේ website security එක සහ performance එක Cloudflare ට භාර දීලා තියෙනවා:
+        </p>
+
+        <div class="tag-row">
+          <span class="tag">Discord</span>
+          <span class="tag">Shopify</span>
+          <span class="tag">Canva</span>
+          <span class="tag">Doordash</span>
+          <span class="tag">IBM</span>
+          <span class="tag">Garmin</span>
+          <span class="tag">L'Oréal</span>
+          <span class="tag">Udemy</span>
+          <span class="tag">Zendesk</span>
+          <span class="tag">Dell</span>
+          <span class="tag">Snap</span>
+          <span class="tag">+ Millions more</span>
+        </div>
+
+        <div class="info-box">
+          <div class="info-title sinhala-text">🌟 Fun Fact</div>
+          <p class="sinhala-text">
+            Cloudflare හරහා මුළු අන්තර්ජාලයේ traffic එකෙන් <strong>20%</strong> ක් පමණ handle කරනවා.
+            Cloudflare down වුනොත් — මුළු අන්තර්ජාලයෙන්ම විශාල කොටසක් down වෙනවා!
+            (2019 දී මේ වගේ දෙයක් ඇත්තටම සිද්ධ වුණා.)
+          </p>
+        </div>
+
+        <hr class="section-divider">
+
+        <h2 class="section-title">
+          <span class="icon-circle">🎯</span>
+          <span class="sinhala-text">ඔයාගේ Website එකට Cloudflare Add කරන්නේ කෙසේද?</span>
+        </h2>
+
+        <ul class="steps-list">
+          <li>
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <div class="step-title sinhala-text">cloudflare.com ගිහිල්ලා Free account එකක් create කරන්න</div>
+              <div class="step-desc sinhala-text">Email සහ Password එකක් විතරයි ඕනේ — විනාඩි 2න් පුළුවන්!</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <div class="step-title sinhala-text">ඔයාගේ domain එක add කරන්න</div>
+              <div class="step-desc sinhala-text">example.com → Add site → Free plan එක select කරන්න</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <div class="step-title sinhala-text">Nameservers change කරන්න</div>
+              <div class="step-desc sinhala-text">ඔබේ Domain registrar (GoDaddy/Namecheap වගේ) එකට ගිහිල්ලා Cloudflare
+                nameservers ටික update කරන්න. පැය 24ක් ඇතුළත active වෙනවා!</div>
+            </div>
+          </li>
+          <li>
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <div class="step-title sinhala-text">Done! ✅</div>
+              <div class="step-desc sinhala-text">දැන් ඔයාගේ website එක CDN, SSL, සහ DDoS protection සමඟ සම්පූර්ණයෙන්ම
+                ආරක්ෂිතයි!</div>
+            </div>
+          </li>
+        </ul>
+
+        <hr class="section-divider">
+
+        <h2 class="section-title">
+          <span class="icon-circle">📝</span>
+          <span class="sinhala-text">Summary — Key Points</span>
+        </h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="f-icon">🛡️</div>
+            <div class="f-title sinhala-text">Security</div>
+            <div class="f-desc sinhala-text">DDoS, Bot, සහ Hacker attacks block කරනවා</div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">⚡</div>
+            <div class="f-title sinhala-text">Speed</div>
+            <div class="f-desc sinhala-text">CDN හරහා website එක super fast load කරනවා</div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">🔒</div>
+            <div class="f-title sinhala-text">Free SSL</div>
+            <div class="f-desc sinhala-text">HTTPS automatically ලබා දෙනවා — trust badge එකක් විදියට!</div>
+          </div>
+          <div class="feature-card">
+            <div class="f-icon">💚</div>
+            <div class="f-title sinhala-text">Free Plan</div>
+            <div class="f-desc sinhala-text">ගොඩක් Features සම්පූර්ණයෙන්ම නොමිලේ ලබා දෙනවා</div>
+          </div>
+        </div>
+
+        <div class="cta-section">
+          <h3 class="sinhala-text">ඔයාගේ Website ලෝකය ආරක්ෂිත කරන්න Ready ද? 🚀</h3>
+          <p class="sinhala-text">
+            Cloudflare Free plan එක අදම try කරන්න — Credit card එකක් ඕනේ නෑ, setup කරන්න යන්නේ විනාඩි 5යි!
+          </p>
+          <a href="https://cloudflare.com" class="cta-btn" target="_blank">
+            cloudflare.com ➜
+          </a>
+        </div>
+
+        <div class="hashtag-row">
+          <span class="hashtag">#Cloudflare</span>
+          <span class="hashtag">#WebSecurity</span>
+          <span class="hashtag">#Tech</span>
+          <span class="hashtag">#SinhalaContent</span>
+          <span class="hashtag">#WebDevelopment</span>
+          <span class="hashtag">#CloudComputing</span>
+          <span class="hashtag">#CDN</span>
+          <span class="hashtag">#Beginners</span>
+          <span class="hashtag">#LearningTech</span>
+          <span class="hashtag">#SriLankaTech</span>
+        </div>
+
+      </div>
     </div>
-
-    <div class="author-bar">
-      <div class="author-avatar">CF</div>
-      <div class="author-info">
-        <div class="author-name sinhala-text">Tech Explained · සිංහල</div>
-        <div class="author-meta sinhala-text">Web Technology · Cloud Security · Beginners Guide</div>
-      </div>
-      <div class="stats-row">
-        <span class="stat-pill">☕ 8 min read</span>
-      </div>
-    </div>
-
-    <div class="article-body">
-
-      <p class="lead-text sinhala-text">
-        ඔබ "Cloudflare" කියන වචනය ඇහුවාම... "ඒ මොකක්ද?" කියලා හිතෙනවා ඇති. 
-        අද ඒ ගැන ඔබ දැනගත යුතු සෑම දෙයක්ම — 
-        <em>ළමයෙකුටත් තේරෙන</em> සරල භාෂාවෙන් කියා දෙන්නම්.
-      </p>
-
-      <h2 class="section-title">
-        <span class="icon-circle">🏫</span>
-        <span class="sinhala-text">පළමුව — Cloudflare කියන්නේ කොහොම එකක්ද?</span>
-      </h2>
-
-      <p class="body-text sinhala-text">
-        Cloudflare යනු 2009 දී ඇමරිකාවේ ආරම්භ කළ <strong>Internet Infrastructure Company</strong> එකක්. 
-        ඔවුන්ගේ ප්‍රධාන කාර්යය තමයි Internet ලෝකය ආරක්ෂා කරන එක සහ වේගවත් කරන එක.
-      </p>
-
-      <div class="analogy-box">
-        <div class="analogy-label sinhala-text">🍎 ජීවිතේ උදාහරණය</div>
-        <p class="sinhala-text">
-          ඔයාගේ ගෙදර ගේට්ටුව ළඟ Security Guard කෙනෙක් ඉන්නවා කියලා හිතන්න. 
-          ඒ Guard කෙනා බලනවා — ගෙදරට එන අය ඇත්තටම ඔයාලාගේ හිතවතුන්ද, 
-          නැත්නම් හොරෙක්ද කියලා. හොරෙක් ආවොත් ඒ Guard කෙනා එයාව block කරනවා. 
-          හිතවතෙකු ආවොත් ඉක්මනින් ඇතුළට ගන්නවා. <strong>Cloudflare</strong> කරන්නේ අන්න ඒ වැඩේමයි — 
-          හැබැයි Websites වලට!
-        </p>
-      </div>
-
-      <hr class="section-divider">
-
-      <h2 class="section-title">
-        <span class="icon-circle">📖</span>
-        <span class="sinhala-text">Cloudflare කරන ප්‍රධානතම වැඩෙන් එකක් — DNS</span>
-      </h2>
-
-      <p class="body-text sinhala-text">
-        ඔබ browser එකේ <strong>google.com</strong> කියලා type කරනකොට — computer එක හොයනවා 
-        "google.com තියෙන්නේ කොහෙද?" කියලා. DNS (Domain Name System) කියන්නේ ඒකට අදාළ address book එකක් වගේ දෙයක්.
-      </p>
-
-      <div class="analogy-box">
-        <div class="analogy-label sinhala-text">📞 Phone Book උදාහරණය</div>
-        <p class="sinhala-text">
-          ඔයාට "රාජ්" කියන කෙනාගේ ගෙදරට යන්න ඕනෑ නම් ඔයා phone book එක බලනවා — 
-          එතකොට රාජ්ගේ address එක හොයාගන්න පුළුවන්. DNS කියන්නේ අන්න ඒ Phone Book එක වගේ. 
-          google.com = <code>142.250.80.46</code> (IP address) කියලා DNS එකෙන් කියනවා. 
-          <br><br>
-          Cloudflare ලෝකයේ <strong>වේගවත්ම DNS</strong> <code>1.1.1.1</code> ලබා දෙනවා — 
-          ඒක සම්පූර්ණයෙන්ම FREE සහ Private, ඒ වගේම ඔබේ දත්ත track කරන්නේ නැතුව (No tracking)!
-        </p>
-      </div>
-
-      <hr class="section-divider">
-
-      <h2 class="section-title">
-        <span class="icon-circle">🌍</span>
-        <span class="sinhala-text">CDN — Website එක ඉක්මන් කරන Magic එක</span>
-      </h2>
-
-      <p class="body-text sinhala-text">
-        CDN කියන්නේ <strong>Content Delivery Network</strong> කියන එකයි. Website වල copies ලෝකේ පුරා තියෙන 
-        servers දහස් ගණනක (නගර 300+ ක) store කරලා — 
-        ඔයාට ළඟම තියෙන server එක හරහා website එක deliver කරනවා.
-      </p>
-
-      <div class="analogy-box">
-        <div class="analogy-label sinhala-text">🍕 Pizza Shop උදාහරණය</div>
-        <p class="sinhala-text">
-          Pizza shop එකක් Colombo වල විතරක් තිබ්බොත් — Galle ඉඳලා order කළොත් 
-          delivery එකට ගොඩක් time යනවා. ඉක්මනින් දෙන්න නම් Galle, Kandy, Jaffna වගේ නගර වලත් 
-          branches තියෙන්න ඕනේ. CDN කියන්නේ අන්න ඒ branches වලට. ඔයාට ළඟම තියෙන branch එකෙන් deliver කරනකොට 
-          website එක <strong>තත්පර ගාණකින් load වෙනවා!</strong>
-        </p>
-      </div>
-
-      <hr class="section-divider">
-
-      <h2 class="section-title">
-        <span class="icon-circle">🛡️</span>
-        <span class="sinhala-text">DDoS Attack කියන්නේ මොකක්ද? Cloudflare ආරක්ෂා කරන්නේ කෙසේද?</span>
-      </h2>
-
-      <p class="body-text sinhala-text">
-        DDoS (Distributed Denial of Service) Attack එකක් කියන්නේ — Hackers ලා website එකට 
-        <strong>එකවර fake requests මිලියන ගණනක්</strong> යවන එකටයි — එතකොට Server එක crash වෙලා 
-        real users ලාට site එකට access වෙන්න බැරි වෙනවා.
-      </p>
-
-      <div class="analogy-box">
-        <div class="analogy-label sinhala-text">🏦 Bank Queue උදාහරණය</div>
-        <p class="sinhala-text">
-          Bank එකක පෝලිම පුරාවටම fake customers ලා පිරුණොත් — 
-          ඇත්ත customers ලාට service ගන්න බැරි වෙනවා. Bank එකේ වැඩ අඩාල වෙනවා. 
-          DDoS Attack එකකුත් ඒ වගේ. Cloudflare ඒ fake requests ටික filter කරලා 
-          real users ලාට විතරක් service දෙනවා — <strong>තත්පරයකට Attacks මිලියන ගණනක් Block කරනවා!</strong>
-        </p>
-      </div>
-
-      <div class="info-box">
-        <div class="info-title sinhala-text">📊 ඇත්ත Data</div>
-        <p class="sinhala-text">
-          Cloudflare දිනකට අන්තර්ජාලයේ traffic එකෙන් <strong>20%</strong> ක් පමණ handle කරනවා. 
-          ලෝකේ පුරා Internet users ලා බිලියන 5 කට වඩා ඉන්නවා — Cloudflare ඒ ගොඩදෙනෙක්ගේ requests 
-          තත්පර ගාණක් ඇතුළත process කරනවා.
-        </p>
-      </div>
-
-      <hr class="section-divider">
-
-      <h2 class="section-title">
-        <span class="icon-circle">🔒</span>
-        <span class="sinhala-text">Web Application Firewall (WAF)</span>
-      </h2>
-
-      <p class="body-text sinhala-text">
-        WAF කියන්නේ Website එකේ ඉන්න "Smart Bouncer" වගේ කෙනෙක්. Hackers ලා 
-        website එක hack කරන්නට try කළොත් — SQL Injection, XSS Attacks, 
-        Bot Attacks වගේ දේවල් — Cloudflare WAF හරහා ඒ දේවල් filter කරලා block කරනවා.
-      </p>
-
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="f-icon">🦠</div>
-          <div class="f-title sinhala-text">SQL Injection Block</div>
-          <div class="f-desc sinhala-text">Database එකේ දත්ත හොරකම් කරන attacks automatically block කරනවා</div>
-        </div>
-        <div class="feature-card">
-          <div class="f-icon">🤖</div>
-          <div class="f-title sinhala-text">Bot Protection</div>
-          <div class="f-desc sinhala-text">Fake bots ලව filter කරලා real users ලාට පමණක් access දෙනවා</div>
-        </div>
-        <div class="feature-card">
-          <div class="f-icon">🔐</div>
-          <div class="f-title sinhala-text">SSL/TLS Free</div>
-          <div class="f-desc sinhala-text">ඔයාගේ website එක HTTPS කරන්නට Free SSL ලබා දෙනවා</div>
-        </div>
-        <div class="feature-card">
-          <div class="f-icon">📧</div>
-          <div class="f-title sinhala-text">Email Routing</div>
-          <div class="f-desc sinhala-text">Domain emails නොමිලේ manage කරගන්න පුළුවන්</div>
-        </div>
-      </div>
-
-      <hr class="section-divider">
-
-      <h2 class="section-title">
-        <span class="icon-circle">⚙️</span>
-        <span class="sinhala-text">Cloudflare ක්‍රියා කරන්නේ කෙසේද? Step by Step</span>
-      </h2>
-
-      <ul class="steps-list">
-        <li>
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <div class="step-title sinhala-text">ඔයා website ලිපිනය type කරනවා</div>
-            <div class="step-desc sinhala-text">example.com කියලා browser එකේ type කරනකොට ඒ request එක Cloudflare Server එකට එනවා — ඔයාගේ computer එකට ළඟම තියෙන datacenter එකට.</div>
-          </div>
-        </li>
-        <li>
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <div class="step-title sinhala-text">Security Check</div>
-            <div class="step-desc sinhala-text">Cloudflare ඔයාගේ request එක scan කරනවා — Hacker කෙනෙක්ද? Bot කෙනෙක්ද? Real user කෙනෙක්ද? Real user කෙනෙක් නම් විතරක් ඇතුළට යවනවා.</div>
-          </div>
-        </li>
-        <li>
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <div class="step-title sinhala-text">Cache Check</div>
-            <div class="step-desc sinhala-text">Website එකේ copy එකක් Cloudflare server වල save වෙලාද තියෙන්නේ කියලා බලනවා. එහෙම නම් original server එකට නොගිහින් ළඟම තියෙන server එකෙන් deliver කරනවා — Super Fast!</div>
-          </div>
-        </li>
-        <li>
-          <div class="step-num">4</div>
-          <div class="step-content">
-            <div class="step-title sinhala-text">ඔයාට deliver කරනවා!</div>
-            <div class="step-desc sinhala-text">Encrypted (HTTPS) connection එකක් හරහා website එක ඔයාට පෙන්වනවා — ඉතා ආරක්ෂිතව, ඉක්මනින්!</div>
-          </div>
-        </li>
-      </ul>
-
-      <hr class="section-divider">
-
-      <div class="big-quote">
-        <p class="sinhala-text">"Cloudflare නැතිව modern Internet එකක් imagine කරන්නත් අමාරුයි — ඒ ගොල්ලො තමයි මුළු ලෝකයේම Internet එකේ නොපෙනෙන කොඳු නාරටිය."</p>
-        <div class="quote-source">— Tech Analysts, 2024</div>
-      </div>
-
-      <hr class="section-divider">
-
-      <h2 class="section-title">
-        <span class="icon-circle">💰</span>
-        <span class="sinhala-text">Free Plan vs Paid Plans — ඔයාට ඕනෑ කරන්නේ කුමක්ද?</span>
-      </h2>
-
-      <table class="compare-table">
-        <thead>
-          <tr>
-            <th>Feature</th>
-            <th>Free 🆓</th>
-            <th>Pro ($20/mo)</th>
-            <th>Business ($200/mo)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="sinhala-text">CDN (Content Delivery)</td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td class="sinhala-text">SSL Certificate</td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td class="sinhala-text">Basic DDoS Protection</td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td class="sinhala-text">Advanced WAF Rules</td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td class="sinhala-text">Image Optimization</td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="check">✓</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td class="sinhala-text">Custom SSL Certificate</td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-          <tr>
-            <td class="sinhala-text">24/7 Priority Support</td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="cross">✗</span></td>
-            <td><span class="check">✓</span></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <p class="body-text sinhala-text">
-        <strong>ඔයාට තියෙන්නේ Personal blog එකක්, Portfolio එකක් හෝ Small business එකක් නම්</strong> — Free plan එක හොඳටම ප්‍රමාණවත්! 
-        E-commerce හෝ ගොඩක් High traffic තියෙන sites වලට Pro plan එකක් consider කරන්න පුළුවන්.
-      </p>
-
-      <hr class="section-divider">
-
-      <h2 class="section-title">
-        <span class="icon-circle">🚀</span>
-        <span class="sinhala-text">Cloudflare හරහා දෙන තවත් Amazing Products</span>
-      </h2>
-
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="f-icon">⚡</div>
-          <div class="f-title">Cloudflare Workers</div>
-          <div class="f-desc sinhala-text">Code එක Edge Servers වල run වෙනවා — Original server එකට යන්නේ නැතුවම වැඩ කරන serverless apps!</div>
-        </div>
-        <div class="feature-card">
-          <div class="f-icon">🗄️</div>
-          <div class="f-title">Cloudflare R2</div>
-          <div class="f-desc sinhala-text">AWS S3 වගේ storage එකක් — හැබැයි Data Transfer වලට ගෙවන්න ඕනේ නෑ (Free Egress!)</div>
-        </div>
-        <div class="feature-card">
-          <div class="f-icon">🌐</div>
-          <div class="f-title">Cloudflare Pages</div>
-          <div class="f-desc sinhala-text">Static websites සහ Full-stack apps deploy කරන්න පුළුවන් — Fast, Free, Easy!</div>
-        </div>
-        <div class="feature-card">
-          <div class="f-icon">🔑</div>
-          <div class="f-title">Cloudflare Zero Trust</div>
-          <div class="f-desc sinhala-text">Company networks VPN නැතිව secure කරනවා — modern corporate security!</div>
-        </div>
-        <div class="feature-card">
-          <div class="f-icon">📡</div>
-          <div class="f-title">Cloudflare Tunnel</div>
-          <div class="f-desc sinhala-text">Port forwarding කරන්නේ නැතුව ඔයාගේ local server එක internet එකට expose කරන්න පුළුවන්!</div>
-        </div>
-        <div class="feature-card">
-          <div class="f-icon">📊</div>
-          <div class="f-title">Cloudflare Analytics</div>
-          <div class="f-desc sinhala-text">Website traffic insights ලබා දෙනවා — cookie consent නැතිව privacy-first විදියට!</div>
-        </div>
-      </div>
-
-      <hr class="section-divider">
-
-      <h2 class="section-title">
-        <span class="icon-circle">🏢</span>
-        <span class="sinhala-text">Cloudflare පාවිච්චි කරන්නේ කවුද?</span>
-      </h2>
-
-      <p class="body-text sinhala-text">
-        ලෝකේ ප්‍රසිද්ධ companies ඔවුන්ගේ website security එක සහ performance එක Cloudflare ට භාර දීලා තියෙනවා:
-      </p>
-
-      <div class="tag-row">
-        <span class="tag">Discord</span>
-        <span class="tag">Shopify</span>
-        <span class="tag">Canva</span>
-        <span class="tag">Doordash</span>
-        <span class="tag">IBM</span>
-        <span class="tag">Garmin</span>
-        <span class="tag">L'Oréal</span>
-        <span class="tag">Udemy</span>
-        <span class="tag">Zendesk</span>
-        <span class="tag">Dell</span>
-        <span class="tag">Snap</span>
-        <span class="tag">+ Millions more</span>
-      </div>
-
-      <div class="info-box">
-        <div class="info-title sinhala-text">🌟 Fun Fact</div>
-        <p class="sinhala-text">
-          Cloudflare හරහා මුළු අන්තර්ජාලයේ traffic එකෙන් <strong>20%</strong> ක් පමණ handle කරනවා. 
-          Cloudflare down වුනොත් — මුළු අන්තර්ජාලයෙන්ම විශාල කොටසක් down වෙනවා! 
-          (2019 දී මේ වගේ දෙයක් ඇත්තටම සිද්ධ වුණා.)
-        </p>
-      </div>
-
-      <hr class="section-divider">
-
-      <h2 class="section-title">
-        <span class="icon-circle">🎯</span>
-        <span class="sinhala-text">ඔයාගේ Website එකට Cloudflare Add කරන්නේ කෙසේද?</span>
-      </h2>
-
-      <ul class="steps-list">
-        <li>
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <div class="step-title sinhala-text">cloudflare.com ගිහිල්ලා Free account එකක් create කරන්න</div>
-            <div class="step-desc sinhala-text">Email සහ Password එකක් විතරයි ඕනේ — විනාඩි 2න් පුළුවන්!</div>
-          </div>
-        </li>
-        <li>
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <div class="step-title sinhala-text">ඔයාගේ domain එක add කරන්න</div>
-            <div class="step-desc sinhala-text">example.com → Add site → Free plan එක select කරන්න</div>
-          </div>
-        </li>
-        <li>
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <div class="step-title sinhala-text">Nameservers change කරන්න</div>
-            <div class="step-desc sinhala-text">ඔබේ Domain registrar (GoDaddy/Namecheap වගේ) එකට ගිහිල්ලා Cloudflare nameservers ටික update කරන්න. පැය 24ක් ඇතුළත active වෙනවා!</div>
-          </div>
-        </li>
-        <li>
-          <div class="step-num">4</div>
-          <div class="step-content">
-            <div class="step-title sinhala-text">Done! ✅</div>
-            <div class="step-desc sinhala-text">දැන් ඔයාගේ website එක CDN, SSL, සහ DDoS protection සමඟ සම්පූර්ණයෙන්ම ආරක්ෂිතයි!</div>
-          </div>
-        </li>
-      </ul>
-
-      <hr class="section-divider">
-
-      <h2 class="section-title">
-        <span class="icon-circle">📝</span>
-        <span class="sinhala-text">Summary — Key Points</span>
-      </h2>
-
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="f-icon">🛡️</div>
-          <div class="f-title sinhala-text">Security</div>
-          <div class="f-desc sinhala-text">DDoS, Bot, සහ Hacker attacks block කරනවා</div>
-        </div>
-        <div class="feature-card">
-          <div class="f-icon">⚡</div>
-          <div class="f-title sinhala-text">Speed</div>
-          <div class="f-desc sinhala-text">CDN හරහා website එක super fast load කරනවා</div>
-        </div>
-        <div class="feature-card">
-          <div class="f-icon">🔒</div>
-          <div class="f-title sinhala-text">Free SSL</div>
-          <div class="f-desc sinhala-text">HTTPS automatically ලබා දෙනවා — trust badge එකක් විදියට!</div>
-        </div>
-        <div class="feature-card">
-          <div class="f-icon">💚</div>
-          <div class="f-title sinhala-text">Free Plan</div>
-          <div class="f-desc sinhala-text">ගොඩක් Features සම්පූර්ණයෙන්ම නොමිලේ ලබා දෙනවා</div>
-        </div>
-      </div>
-
-      <div class="cta-section">
-        <h3 class="sinhala-text">ඔයාගේ Website ලෝකය ආරක්ෂිත කරන්න Ready ද? 🚀</h3>
-        <p class="sinhala-text">
-          Cloudflare Free plan එක අදම try කරන්න — Credit card එකක් ඕනේ නෑ, setup කරන්න යන්නේ විනාඩි 5යි!
-        </p>
-        <a href="https://cloudflare.com" class="cta-btn" target="_blank">
-          cloudflare.com ➜
-        </a>
-      </div>
-
-      <div class="hashtag-row">
-        <span class="hashtag">#Cloudflare</span>
-        <span class="hashtag">#WebSecurity</span>
-        <span class="hashtag">#Tech</span>
-        <span class="hashtag">#SinhalaContent</span>
-        <span class="hashtag">#WebDevelopment</span>
-        <span class="hashtag">#CloudComputing</span>
-        <span class="hashtag">#CDN</span>
-        <span class="hashtag">#Beginners</span>
-        <span class="hashtag">#LearningTech</span>
-        <span class="hashtag">#SriLankaTech</span>
-      </div>
-
-    </div></div></div>
+  </div>
 </body>
+
 </html>
